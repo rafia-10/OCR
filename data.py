@@ -3,7 +3,7 @@ import torch
 from torch.utils.data import Dataset, DataLoader
 from torchvision import transforms
 import os
-from amharic_mapping import AMHARIC_MAPPING
+from amharic_mapping import amharic_mapping
 
 def preprocess_image(img_path):
     img = Image.open(img_path).convert('L')
@@ -20,12 +20,12 @@ def preprocess_image(img_path):
 def encode_label(label_text):
     encoded = []
     for char in label_text:
-        for k,v in AMHARIC_MAPPING.items():
+        for k,v in amharic_mapping.items():
             if v == char:
                 encoded.append(k)
                 break
         else:
-            encoded.append(len(AMHARIC_MAPPING))  # unknown
+            encoded.append(len(amharic_mapping))  # unknown
     return encoded
 
 class OCRDataset(Dataset):
@@ -67,3 +67,4 @@ def get_loaders(train_img_dir, train_labels_dir, val_img_dir, val_labels_dir, ba
     train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True, collate_fn=collate_fn)
     val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False, collate_fn=collate_fn)
     return train_loader, val_loader
+
